@@ -8,17 +8,17 @@
 import 'react-native-gesture-handler';
 import React, { Component }  from 'react';
 import styles from './AppStyles';
-import AppNavigation from './src/navigation';
-// import BottomBar from './src/containers/BottomBar/BottomBar';
-// import SideDrawer from "../SideDrawer/SideDrawer";
+import AppNavigation from './src/navigation/navigation';
+
+
 
 export default class App extends Component {
   constructor(props) {
     super(props);
   };
   render() {
+    console.disableYellowBox = true;
   return (
-    // <BottomBar/>
     <AppNavigation />
   );
   }
