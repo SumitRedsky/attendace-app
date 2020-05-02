@@ -1,6 +1,6 @@
 import * as colors from "../../constants/colors";
 import * as fonts from "../../constants/fonts";
-
+import { Dimensions } from 'react-native';
 const styles = {
     Title:{
         fontSize: fonts.FONT_HEADING,
@@ -13,7 +13,8 @@ const styles = {
         justifyContent:'space-between',
         height:50,
         marginBottom:5,
-        width:330,
+        // width:330,
+        width: Dimensions.get('window').width-30,
         paddingLeft:16,
         paddingRight:16,
         alignItems:'center',
@@ -33,7 +34,8 @@ const styles = {
     Child:{
         padding:16,
         marginBottom:5,
-        width:330,
+        width: Dimensions.get('window').width-30,
+        // width:330,
         marginTop:-6,
         borderWidth:1,
         borderColor:colors.primaryColor,

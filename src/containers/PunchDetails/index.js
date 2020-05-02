@@ -3,100 +3,25 @@ import {TouchableOpacity,ScrollView, Text,View } from "react-native";
 import styles from './styles';
 import BottomBar from "../BottomBar";
 import Accordian from "../../shared/Accordian";
+import {BASE_URL} from '../../constants/api';
+import * as commanApi from "../../store/commanApi";
+import AsyncStorage from '@react-native-community/async-storage';
+import moment from 'moment';
 
 export default class PunchDetails extends Component {
     constructor(props) {
         super(props);
         this.state={
+            userToken:'',
+            userId:'',
             isToday:true,
             isWeek:false,
             isMonthly:false,
             pickerOpen:false,
-            punchDetails:[{
-                checkIn:'09:00:00',
-                checkOut:'11:00:02'
-            },
-            {
-                checkIn:'12:00:00',
-                checkOut:'01:00:02'
-            },
-            {
-                checkIn:'02:00:00',
-                checkOut:'05:00:02'
-            },
-            {
-                checkIn:'05:10:00',
-                checkOut:'07:00:02'
-            }],
-            weeklyPunchDetails:[{
-                day:'Monday',
-                date:'09/12/2020',
-                totalWorkedHours:'8 hours',
-                data:[{
-                    checkIn:'09:00:00',
-                    checkOut:'11:00:02'  
-                },{
-                    checkIn:'12:00:00',
-                    checkOut:'01:00:02'
-                }]
-            },{
-                day:'Tuesday',
-                date:'10/12/2020',
-                totalWorkedHours:'7 hours',
-                data:[{
-                    checkIn:'10:00:00',
-                    checkOut:'11:00:02'  
-                },{
-                    checkIn:'12:00:00',
-                    checkOut:'01:00:02'
-                }]
-            },
-            {
-                day:'Wednesday',
-                date:'11/12/2020',
-                totalWorkedHours:'8 hours',
-                data:[{
-                    checkIn:'10:00:00',
-                    checkOut:'11:00:02'  
-                },{
-                    checkIn:'12:00:00',
-                    checkOut:'01:00:02'
-                }]
-            },{
-                day:'Thursday',
-                date:'12/12/2020',
-                totalWorkedHours:'7 hours',
-                data:[{
-                    checkIn:'10:00:00',
-                    checkOut:'11:00:02'  
-                },{
-                    checkIn:'12:00:00',
-                    checkOut:'01:00:02'
-                }]
-            },{
-                day:'Friday',
-                date:'13/12/2020',
-                totalWorkedHours:'6 hours',
-                data:[{
-                    checkIn:'10:00:00',
-                    checkOut:'11:00:02'  
-                },{
-                    checkIn:'12:00:00',
-                    checkOut:'01:00:02'
-                }]
-            },{
-                day:'Saturday',
-                date:'14/12/2020',
-                totalWorkedHours:'7 hours',
-                data:[{
-                    checkIn:'10:00:00',
-                    checkOut:'11:00:02'  
-                },{
-                    checkIn:'12:00:00',
-                    checkOut:'01:00:02'
-                }]
-            }
-        ],
+            query:'',
+            shortage:'',
+            punchDetails:[],
+            weeklyPunchDetails:[],
         monthlyPunchDetails:[{
             day:'Saturday',
             date:'01/12/2020',
@@ -184,10 +109,92 @@ export default class PunchDetails extends Component {
         }]
         }
     }
+    componentDidMount= async()=> {
+        const token= await AsyncStorage.getItem('userToken');
+        const userId=await AsyncStorage.getItem('userId');
+        this.setState({userToken: token,userId: userId});
+        this.getAttendance('today');
+    }
+    getAttendance = async(params)=>{
+        console.log('paramsssss:',params)
+        let type
+        switch(params) {
+            case 'today':
+            type='today'
+            break;
+            case 'currentWeek':
+            type='currentWeek'
+            break;
+            case 'monthly':
+            type='monthly'
+            break;
+            default:
+              alert("type not found");
+              break;
+            }
+            try {
+                let response = commanApi.getDataApi(BASE_URL+`punches?type=${type}&&userId=${this.state.userId}`, this.state.userToken)
+                response.then(res => {
+                    if (res.data&&res.data.length!=0) {
+                        switch(type) {
+                            case 'today':
+                              let todayAttendance=res.data[0]
+                              if(todayAttendance){
+                                  if(todayAttendance.punches && (todayAttendance.punches.length!=0)){
+                                      this.setState({
+                                        punchDetails :todayAttendance.punches 
+                                      })
+                                  }
+                                this.setState({shortage:todayAttendance.shortage})
+                              }
+                              break;
+                            case 'currentWeek':
+                            let currentWeekAttendances=res.data;
+                            if(currentWeekAttendances){
+                             this.setState({
+                                weeklyPunchDetails:currentWeekAttendances
+                             })
+                            }
+                            break;
+                            case 'monthly':
+                            alert('type=monthly')
+                              break;
+                            default:
+                              alert("no type not found");
+                              break;
+                            }  
+                    }else {
+                      console.log("data:",res.data);
+                      switch(this.state.query) {
+                        case 'type=today':
+                        alert('no today attendance found');
+                          break;
+                        case 'type=currentWeek':
+                        alert('no currentWeek attendance found');
+                          break;
+                        case 'type=monthly':
+                        alert('no monthly attendance found');
+                          break;
+                        default:
+                          alert("no type not found");
+                          break;
+                        } 
+                    }
+                }).catch(error => {
+                    alert("Something went wrong",error)
+                    console.log('errorrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr:',error)
+                })
+             }
+             catch (err) {
+              alert(err)
+             }
+    }
     onToday=()=>{
+      this.getAttendance('today');
       this.setState({isToday:true,isWeek:false,isMonthly:false});
     }
     onWeek=()=>{
+        this.getAttendance('currentWeek');
         this.setState({isToday:false,isWeek:true,isMonthly:false});
     }
     onMonth=()=>{
@@ -202,11 +209,13 @@ export default class PunchDetails extends Component {
         for (let item of this.state.weeklyPunchDetails) {
             items.push(
                 <Accordian 
+                    id={item._id}
                     from= 'punchDetails'
                     day = {item.day}
                     date={item.date}
                     totalWorkedHours={item.totalWorkedHours}
-                    data = {item.data}
+                    data = {item.punches}
+                    shortage={item.shortage}
                 />
             );
         }
@@ -217,6 +226,7 @@ export default class PunchDetails extends Component {
         for(let item of this.state.monthlyPunchDetails){
             values.push(
                 <Accordian 
+                id={item._id}
                 from= 'monthlyPunchDetails'
                 day = {item.day}
                 date={item.date}
@@ -242,9 +252,9 @@ export default class PunchDetails extends Component {
             <TouchableOpacity style={this.state.isWeek ? [ClickedButtons,{width:98}] : [Buttons,{width:98}]} onPress={this.onWeek}>
                 <Text style={this.state.isWeek ? UnselectedButton : SelectedButton}>Current week</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={this.state.isMonthly ? ClickedButtons : Buttons} onPress={this.onMonth}>
+            {/* <TouchableOpacity style={this.state.isMonthly ? ClickedButtons : Buttons} onPress={this.onMonth}>
                 <Text style={this.state.isMonthly ? UnselectedButton : SelectedButton}>Monthly</Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
            
             </View>
             {/* <DatePicker open={this.state.pickerOpen} onChange={this.handleChange}/> */}
@@ -257,9 +267,9 @@ export default class PunchDetails extends Component {
             </View>
             {this.state.punchDetails.map((item)=>{
                 return(
-                <View style={[Selectors,PuchDetail,{marginTop:15}]}>
-                  <Text>{item.checkIn}</Text>
-                  <Text>{item.checkOut}</Text>
+                <View key={item._id} style={[Selectors,PuchDetail,{marginTop:15}]}>
+                  <Text>{item.punchIn}</Text>
+                  <Text>{item.punchOut}</Text>
                 </View>
                 )
             })}
@@ -271,7 +281,7 @@ export default class PunchDetails extends Component {
 
             <View style={[Selectors,PuchDetail,{marginTop:15}]}>
             <Text style={TextStyle}>Shortage:</Text>
-            <Text style={[TextStyle,{color:'green'}]}>45 minutes</Text>
+            <Text style={[TextStyle,{color:'red'}]}>{this.state.shortage}</Text>
             </View>
             </View> : this.state.isWeek ?
             <View style={WeeklyPunchDetail}>
@@ -293,3 +303,40 @@ export default class PunchDetails extends Component {
 
 
 
+
+//    for(let item of todayAttendance.punches){
+                                //        if(item){
+                                //         var joined =this.state.punchDetails.concat({
+                                //             id:item._id,
+                                //             punchIn:item.punchIn,
+                                //             punchOut:item.punchOut 
+                                //          })
+                                //          this.setState({ punchDetails: joined })
+                                //        } 
+                                //    }
+                                // for(let dayItem of currentWeekAttendances){
+                            //   if(dayItem){
+                            //       if(dayItem.punches&&(dayItem.punches.length!=0)){
+                            //           for(let item of dayItem.punches){
+                            //               if(item){
+                            //                   data.push({
+                            //                     id:item._id,
+                            //                     punchIn:item.punchIn,
+                            //                     punchOut:item.punchOut  
+                            //                   })
+                            //               }
+                            //           }
+                            //       }
+                            //       console.log('punchdatdata:',data)
+                            //       let day=moment(dayItem.date).format('d')
+                            //       var joined =this.state.weeklyPunchDetails.concat({
+                            //         id: dayItem._id, 
+                            //         day:day,
+                            //         date:dayItem.date,
+                            //         totalWorkedHours:'8 hours',
+                            //         data:data
+                            //      })
+                            //      data=[];
+                            //      this.setState({ weeklyPunchDetails: joined }) 
+                            //   }
+                            // }

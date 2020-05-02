@@ -1,8 +1,9 @@
 import * as colors from "../../constants/colors";
 import * as fonts from "../../constants/fonts";
+import { Dimensions } from 'react-native';
 const styles = {
     UserName: {
-        textAlign: "center",
+        // textAlign: "center",
         color: colors.primaryColor,
         fontSize: 26
     },
@@ -15,7 +16,7 @@ const styles = {
         display: "flex",
         flexDirection: "row",
         justifyContent: "space-between",
-        marginTop: 48
+        marginTop: 42
     },
     Time: {
         color: "#E6B0B0",
@@ -47,16 +48,22 @@ const styles = {
         alignItems: "center",
     },
     MainContainer: {
-        height: 280,
-        width: 280,
-        borderRadius: 280 / 2,
+        width: Dimensions.get('window').width-80,
+        height: Dimensions.get('window').width-80,
+        borderRadius:Math.round(Dimensions.get('window').width-80 + Dimensions.get('window').height-80) / 2,
+        // height: 280,
+        // width: 280,
+        // borderRadius: 280 / 2,
         borderWidth: 3,
         borderColor: "#3A454B"
     },
     ColoredContainer: {
-        height: 215,
-        width: 215,
-        borderRadius: 210 / 2,
+        width: Dimensions.get('window').width-140,
+        height: Dimensions.get('window').width-140,
+        borderRadius:Math.round(Dimensions.get('window').width-140 + Dimensions.get('window').height-140) / 2,
+        // height: 215,
+        // width: 215,
+        // borderRadius: 210 / 2,
         borderWidth: 4,
         borderColor: "#DE5F68"
     },
@@ -65,11 +72,15 @@ const styles = {
         flexDirection: "column",
         justifyContent: "space-between",
         alignItems: "center",
-        paddingTop: 35,
-        paddingBottom: 20,
-        height: 200,
-        width: 200,
-        borderRadius: 200 / 2,
+        textAlign:'center',
+        paddingTop: 40,
+        paddingBottom: 40,
+        width: Dimensions.get('window').width-160,
+        height: Dimensions.get('window').width-160,
+        borderRadius:Math.round(Dimensions.get('window').width-160 + Dimensions.get('window').height-160) / 2,
+        // height: 200,
+        // width: 200,
+        // borderRadius: 200 / 2,
         color: "white"
     },
     BottomContainer: {
@@ -97,6 +108,10 @@ const styles = {
     PunchOutHourText: {
         fontSize: fonts.FONT_HEADING,
         color: colors.primaryColor
+    },
+    OverText:{
+        fontSize: fonts.FONT_HEADING,
+        color:'white'
     },
     CurrentDate: {
         display: "flex",
@@ -130,7 +145,7 @@ const styles = {
     Box: {
         color: 'white',
         fontSize: 26,
-        top: 40
+        // top: 40
     },
     DateText: {
         fontSize: 17,

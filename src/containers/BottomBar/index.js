@@ -4,16 +4,30 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import FoundationIcon from 'react-native-vector-icons/Foundation';
 import styles from './styles';
 
-var isHome=true;
-var isPunchDetails=false;
-var isProfile=false;
-var isLeave=false;
+let isHome=true;
+let isPunchDetails=false;
+let isProfile=false;
+let isLeave=false;
 export default class BottomBar extends Component {
     constructor(props) {
         super(props);
+        
+        // this.state={
+        //      isHome:true,
+        //      isPunchDetails:false,
+        //      isProfile:false,
+        //      isLeave:false 
+        // }
     }
+    // componentDidMount(){
+    //     this.showHome();
+    // }
     showHome=()=>{
         if(this.props){
+            //  this.setState({isHome:true,isPunchDetails:false,isProfile:false,isLeave:false},()=>{
+            //      console.log(this.state);
+            //     // this.props.navigation.navigate("Home")
+            //  })
             isHome=true;
             isPunchDetails=false;
             isProfile=false;
@@ -23,6 +37,10 @@ export default class BottomBar extends Component {
     }
     showPunchDetails=()=>{
         if(this.props){
+            // this.setState({isHome:false,isPunchDetails:true,isProfile:false,isLeave:false},()=>{
+            //     console.log(this.state);
+            //     // this.props.navigation.navigate("PunchDetails")
+            // })
             isHome=false;
             isPunchDetails=true;
             isProfile=false;
@@ -32,6 +50,10 @@ export default class BottomBar extends Component {
     }
     showLeaves=()=>{
         if(this.props){
+            // this.setState({isHome:false,isPunchDetails:false,isProfile:false,isLeave:true},()=>{
+            //     console.log(this.state);
+            //     // this.props.navigation.navigate("AttendanceDetails")
+            // })
             isHome=false;
             isPunchDetails=false;
             isProfile=false;
@@ -41,11 +63,17 @@ export default class BottomBar extends Component {
     }
     showProfile=()=>{
         if(this.props){
+            // this.setState({isHome:false,isPunchDetails:false,isProfile:true,isLeave:false},()=>{
+            //     console.log(this.state);
+            //     // this.props.navigation.navigate("Profile")
+            // })
             isHome=false;
             isPunchDetails=false;
             isProfile=true;
             isLeave=false;
-            this.props.navigation.navigate("Profile")
+            // this.props.navigation.navigate("Profile")
+            this.props.navigation.navigate("Chat")
+
         }
     }
     render() {
@@ -67,9 +95,10 @@ export default class BottomBar extends Component {
             <Text style={isLeave?ClickedText:BeforeClickedText}>Attendance Details</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity onPress={this.showProfile} style={BottomBarContent} >            
-            <View style={isProfile?ClickedIcon:Icons}><Icon name="user" size={25} color={isProfile?"white":"#4A5D6B"}/></View>
-            <Text style={isProfile?ClickedText:BeforeClickedText}>Profile</Text>
+            <TouchableOpacity onPress={this.showProfile} style={BottomBarContent} >   
+            {/* user          */}
+            <View style={isProfile?ClickedIcon:Icons}><Icon name="comment" size={25} color={isProfile?"white":"#4A5D6B"}/></View>
+            <Text style={isProfile?ClickedText:BeforeClickedText}>Chat</Text>
             </TouchableOpacity>
 
             </View>

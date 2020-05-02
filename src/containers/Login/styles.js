@@ -1,5 +1,8 @@
 import * as colors from "../../constants/colors";
 import * as fonts from "../../constants/fonts";
+import {
+    Dimensions
+} from 'react-native';
 const styles = {
     Container: {
         flex: 1,
@@ -19,11 +22,14 @@ const styles = {
     },
     InputBox: {
         marginTop: 20,
-        width: 260,
+        width: Dimensions.get('window').width - 80,
+        // width: 260,
         borderWidth: 2,
         borderColor: "#B0BFC6",
         borderRadius: 40,
-        textAlign: "center",
+        paddingLeft: 20,
+        paddingRight: 20
+        // textAlign: "center",
     },
     LoginButton: {
         marginTop: 40,
@@ -53,7 +59,7 @@ const styles = {
         marginTop: 20
     },
     BottomText: {
-        fontSize: fonts.FONT_PAGE_HEADING,                                
+        fontSize: fonts.FONT_PAGE_HEADING,
         position: 'absolute',
         bottom: 0,
         fontFamily: "Arial",
@@ -63,6 +69,18 @@ const styles = {
         color: "#B11115",
         fontWeight: 'bold',
         fontSize: 22
+    },
+    EyeIcon: {
+        color: colors.primaryColor,
+        position: 'absolute',
+        right: '5%',
+        zIndex:10,
+        paddingTop:15
+    },
+    PasswordContainer: {
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center'
     }
 }
 export default styles;

@@ -107,12 +107,24 @@ export default class Profile extends Component {
               if(res.message){
                 alert(res.message);
                 this.props.navigation.navigate("Login")
+                AsyncStorage.setItem('userToken','',()=>{
+                    AsyncStorage.getItem('userToken', (err, result) => {
+                      console.log("token:",result);
+                    });
+                })
+                AsyncStorage.setItem('userId','',()=>{
+                    AsyncStorage.getItem('userId', (err, result) => {
+                      console.log("userId:",result);
+                    });
+                })
+                this.setState({ dialogVisible: false});
               }else{
                 console.log('if no data in response:',res.error)
                 alert(res.error)
                 this.setState({ dialogVisible: false});
               }
             }).catch(error=>{
+                this.props.navigation.navigate("Login")
               console.log('api problem:',error.error)
               alert(error.error)
               this.setState({ dialogVisible: false});
@@ -196,59 +208,3 @@ export default class Profile extends Component {
         );
     }
 }
-
-
-
-
-
-// axios.post(BASE_URL+"users/logOut",body,{
-        //     headers: {
-        //     //  'Content-Type': 'application/json',
-        //      'x-access-token': this.state.userToken,
-        //   }
-        // }).then(response => {
-        //         if(response.data.isSuccess==true){
-        //           if(response.data.message!=null){
-        //             alert(response.data.message);
-        //             this.props.navigation.navigate("Login")
-        //           }
-        //         }
-        //     })
-        //     .catch(error => {
-        //         console.log(error.response);
-        //         if(error.response){
-        //         alert(error.response.data.error);
-        //         this.setState({ dialogVisible: false});
-        //    }
-        // });
-
-        // if(!this.state.oldPassword||!this.state.password||!this.state.confirmPassword){
-        //    alert('All fields are required') 
-        // }else if(this.state.password!=this.state.confirmPassword){
-        //     alert('New password and confirm password should be same.') 
-        // }else{
-        //     let body={
-        //         password:this.state.oldPassword,
-        //         newPassword:this.state.password
-        //       }
-        //       axios.post(BASE_URL+"users/changePassword",body,{
-        //           headers: {
-        //            'Content-Type': 'application/json',
-        //            'x-access-token': this.state.userToken,
-        //         }
-        //       }).then(response => {
-        //               if(response.data.isSuccess==true){
-        //                 if(response.data.data!=null){
-        //                   alert(response.data.data);
-        //                   this.setState({ dialogVisible: false});
-        //                 }
-        //               }
-        //           })
-        //           .catch(error => {
-        //               console.log(error.response);
-        //               if(error.response){
-        //               alert(error.response.data.error);
-        //               this.setState({ dialogVisible: false});
-        //          }
-        //       });
-        // }

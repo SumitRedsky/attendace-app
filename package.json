@@ -17,8 +17,10 @@
     "@react-navigation/stack": "^5.1.0",
     "axios": "^0.19.2",
     "moment": "^2.24.0",
+    "native-base": "^2.13.12",
     "react": "16.9.0",
     "react-native": "0.61.5",
+    "react-native-background-timer": "^2.2.0",
     "react-native-calendar-picker": "^6.0.5",
     "react-native-elements": "^1.2.7",
     "react-native-gesture-handler": "^1.6.0",
@@ -30,8 +32,10 @@
     "react-native-screens": "^2.2.0",
     "react-native-skeleton-content-nonexpo": "^1.0.5",
     "react-native-vector-icons": "^6.6.0",
+    "react-native-wifi-hotspot": "^1.0.0",
     "react-navigation": "^4.2.2",
     "react-navigation-material-bottom-tabs": "^2.2.2",
+    "recyclerlistview": "^3.0.0",
     "rxjs": "^6.5.4"
   },
   "devDependencies": {

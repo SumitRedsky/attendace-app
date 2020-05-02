@@ -1,7 +1,6 @@
 import React, { Component }  from 'react';
 import {TextInput,Image,View,Text,Button,StyleSheet,TouchableOpacity} from 'react-native';
 import styles from './styles';
-import axios from 'axios';
 import {BASE_URL} from '../../constants/api';
 import AsyncStorage from '@react-native-community/async-storage';
 import Icons from 'react-native-vector-icons/FontAwesome';
@@ -25,10 +24,16 @@ export default class Login extends Component {
       data:null,
       isLogin:true,
       isResetPassword:false,
-      isVisibleLoading:false
+      isVisibleLoading:false,
+      isEye:'eye-slash',
+      isPasswordHidden:true
     };
   };
-  componentDidMount() {
+  componentDidMount=async()=> {
+    // let userToken=await AsyncStorage.getItem('userToken')
+    // if(userToken!=null && userToken!=undefined && userToken!=""){
+    //   this.props.navigation.navigate("Home");
+    // }
     this.subscription = loginService.getLoggedIn().subscribe(states=>{
       if(states==true){
         this.setState({isLogin:true,isResetPassword:false});
@@ -139,7 +144,7 @@ export default class Login extends Component {
     }
   }
   onLogin=()=>{
-      this.setState({isVisibleLoading:true})
+      
     
       // validation 
       if(utility.isFieldEmpty(this.state.userName &&this.state.password)){
@@ -162,6 +167,7 @@ export default class Login extends Component {
         password:this.state.password
       }
       try{
+        this.setState({isVisibleLoading:true})
         let response = commanApi.postDataApi(BASE_URL+"users/login",body,headers)
         response.then(res=>{
           if(res.data){
@@ -198,10 +204,24 @@ export default class Login extends Component {
        alert(err)
       }
   }
+  showPassword=()=>{
+    if(this.state.isPasswordHidden){
+      this.setState({
+        isPasswordHidden:false,
+        isEye:'eye'
+      });
+    }else{
+      this.setState({
+        isPasswordHidden:true,
+        isEye:'eye-slash'
+      });
+    }
+
+  }
   render() {
     let form
     const { navigate } = this.props.navigation
-    const { Container,BackButton,Icon,Heading,InputBox,LoginButton,LoginText,ForgotPasswordText,BottomText,Logo}=styles
+    const { PasswordContainer,EyeIcon,Container,BackButton,Icon,Heading,InputBox,LoginButton,LoginText,ForgotPasswordText,BottomText,Logo}=styles
     
     if(this.state.isLogin==true){
       if(this.state.isVisibleLoading==false){
@@ -210,9 +230,12 @@ export default class Login extends Component {
           <Image style={Icon} source={require('../../assets/app-icon.png')} />
           <Text style={Heading}>Attendance</Text>
           <TextInput placeholder="User name" style={InputBox} onChangeText={(userName) => this.setState({userName})}
-            value={this.state.userName}/>
-          <TextInput secureTextEntry={true} placeholder="Password" style={InputBox} onChangeText={(password) => this.setState({password})}
+            value={this.state.userName} />
+           <View style={PasswordContainer}> 
+           <TextInput secureTextEntry={this.state.isPasswordHidden} placeholder="Password" style={InputBox} onChangeText={(password) => this.setState({password})}
             value={this.state.password}/>
+            <Icons name={this.state.isEye} size={24} style={EyeIcon} onPress={this.showPassword}/>
+            </View>
             <TouchableOpacity style={LoginButton} onPress={this.onLogin}>
             <Text style={LoginText} >LOGIN</Text>
            </TouchableOpacity>
@@ -276,132 +299,3 @@ export default class Login extends Component {
      return form
   }
 };
-
-
-
-
-
-
-
-
-
-
-
- 
-
-
-
-      // if(!this.state.userName){
-      //   alert('User name is required')
-      // }else if(!this.state.password){
-      //   alert('Password is required')
-      // }else{
-      //   let body={
-      //     userName:this.state.userName,
-      //     password:this.state.password
-      //   }
-        // axios.post(BASE_URL+"users/login",body,{
-        //     headers: {
-        //       Accept: 'application/json',
-        //      'Content-Type': 'application/json',
-        //   }
-        // }).then(response => {
-        //         console.log('getting data from axios', response.data);
-        //         if(response.data.isSuccess==true){
-        //           if(response.data.data!=null){
-        //             this.setState({
-        //               // loading: false,
-        //               data: response.data.data
-        //           })
-        //           AsyncStorage.setItem('userToken',this.state.data.token,()=>{
-        //             AsyncStorage.getItem('userToken', (err, result) => {
-        //               console.log("token",result);
-        //             });
-        //           })
-        //           this.props.navigation.navigate("Home");
-        //           this.setState({userName:'',password:''});
-        //           }
-        //         }
-        //     })
-        //     .catch(error => {
-        //         console.log(error.response);
-        //         if(error.response){
-        //           alert(error.response.data.error)
-        //         }
-        // });
-      // }
-    // }
-
-
-    
-    // if(this.state){
-    //   if(!this.state.email){
-    //     alert('Email is required')
-    //   }else{
-    //     let body={
-    //       email:this.state.email
-    //     }
-    //     axios.post(BASE_URL+"users/forgotPassword",body,{
-    //         headers: {
-    //           Accept: 'application/json',
-    //          'Content-Type': 'application/json',
-    //       }
-    //     }).then(response => {
-    //             if(response.data.isSuccess==true){
-    //               if(response.data.data!=null){
-    //                 alert(response.data.data)
-    //                 this.setState({isResetPassword:true});
-    //               }
-    //             }
-    //         })
-    //         .catch(error => {
-    //             console.log(error.response);
-    //             if(error.response){
-    //               alert(error.response.data.error)
-    //        }
-    //     });
-    //   }
-    // }
-
-
-    // if(this.state){
-    //   if(!this.state.otp){
-    //     alert('Otp is required')
-    //   }else if(!this.state.password){
-    //     alert('Password is required')
-    //   }else if(!this.state.confirmPassword){
-    //     alert('Confirm password is required')
-    //   }else if(this.state.password!=this.state.confirmPassword){
-    //     alert('Password and confirm password should be same')
-    //   }else{
-    //     let body={
-    //       email:this.state.email,
-    //       otp:this.state.otp,
-    //       newPassword:this.state.password
-    //     }
-    //     axios.post(BASE_URL+"users/resetPassword",body,{
-    //         headers: {
-    //           Accept: 'application/json',
-    //          'Content-Type': 'application/json',
-    //       }
-    //     }).then(response => {
-    //             if(response.data.isSuccess==true){
-    //               if(response.data.data!=null){
-    //                 alert(response.data.data)
-    //                 this.state.password='';
-    //                 this.state.email='';
-    //                 this.state.otp='',
-    //                 this.state.confirmPassword=''
-    //                 loginService.loggedIn(true);
-    //                 // this.setState({isLogin:true,isResetPassword:false});
-    //               }
-    //             }
-    //         })
-    //         .catch(error => {
-    //             console.log(error.response);
-    //             if(error.response){
-    //             alert(error.response.data.error)
-    //        }
-    //     });
-    //   }
-    // }

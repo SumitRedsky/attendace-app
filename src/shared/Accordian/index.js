@@ -57,7 +57,7 @@ export default class Accordian extends Component{
             <TouchableOpacity style={Row} onPress={()=>this.toggleExpand()}>
             <View style={{flexDirection:'column'}}>
             <Text style={Title}>{this.props.day}  ({this.props.date})</Text>
-            <Text style={{color:'white',top:2,bottom:2}}>Total working hours: {this.props.totalWorkedHours}</Text>
+            <Text style={{color:'white',top:2,bottom:2}}>Total working hours:  {this.props.totalWorkedHours}</Text>
             </View>
             <Icon name={this.state.expanded ? 'keyboard-arrow-up' : 'keyboard-arrow-down'} size={30} style={{color:'white'}} />
             </TouchableOpacity>
@@ -72,9 +72,9 @@ export default class Accordian extends Component{
                 </View>
                 {this.props.data.map((item)=>{
                 return(
-                <View style={[Selectors,PuchDetail,{marginTop:15}]}>
-                  <Text>{item.checkIn}</Text>
-                  <Text>{item.checkOut}</Text>
+                <View key={item._id} style={[Selectors,PuchDetail,{marginTop:15}]}>
+                  <Text >{item.punchIn}</Text>
+                  <Text >{item.punchOut}</Text>
                 </View>
                 )
             })}
@@ -83,10 +83,10 @@ export default class Accordian extends Component{
             <Text style={TextStyle}>Total working hours:</Text>
             <Text style={[TextStyle,{color:'green'}]}>9 hours</Text>
             </View>
-
+            
             <View style={[Selectors,PuchDetail,,{marginTop:15}]}>
             <Text style={TextStyle}>Shortage:</Text>
-            <Text style={[TextStyle,{color:'green'}]}>45 minutes</Text>
+            <Text style={[TextStyle,{color:'red'}]}>{this.props.shortage}</Text>
             </View>
             </View>
             }
